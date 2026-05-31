@@ -1,16 +1,16 @@
+from engine.matching_engine import MatchingEngine
 from engine.order import Order
-from engine.order_book import OrderBook
 
 
-book = OrderBook()
+engine = MatchingEngine()
 
-book.add_order(Order(order_id=1, side="BUY", quantity=100, price=50.0, timestamp=1))
-book.add_order(Order(order_id=2, side="BUY", quantity=100, price=50.0, timestamp=2))
-book.add_order(Order(order_id=3, side="BUY", quantity=100, price=49.0, timestamp=3))
+engine.submit_order(Order(order_id=1, side="SELL", quantity=100, price=52.0, timestamp=1))
+engine.submit_order(Order(order_id=2, side="SELL", quantity=100, price=53.0, timestamp=2))
 
-print("Best bid order:", book.best_bid_order())
+trades = engine.submit_order(Order(order_id=3, side="BUY", quantity=150, price=53.0, timestamp=3))
 
-removed = book.pop_best_bid_order()
-print("Removed:", removed)
+for trade in trades:
+    print(trade)
 
-print("New best bid order:", book.best_bid_order())
+print("Best ask:", engine.book.best_ask())
+print("Best ask order:", engine.book.best_ask_order())
