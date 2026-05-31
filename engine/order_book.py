@@ -25,3 +25,34 @@ class OrderBook:
         if not self.asks:
             return None
         return min(self.asks.keys())
+    
+    def best_bid_order(self):
+        price = self.best_bid()
+        if price is None:
+            return None
+        return self.bids[price][0]
+    
+    def best_ask_order(self):
+
+        price = self.best_ask()
+        if price is None: 
+            return None
+        return self.asks[price][0] 
+    
+    def pop_best_bid_order(self):
+        price = self.best_bid()
+        if price is None: 
+            return None 
+        order = self.bids[price].popleft()
+        if len(self.bids[price]) == 0:
+            del self.bids[price]
+        return order 
+    
+    def pop_best_ask_order(self):
+        price = self.best_ask()
+        if price is None:
+            return None 
+        order = self.asks[price].popleft()
+        if len(self.asks[price]) == 0:
+            del self.asks[price]
+        return order
