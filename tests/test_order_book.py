@@ -21,3 +21,25 @@ def test_spread_and_midprice_missing_side():
 
     assert book.spread() is None
     assert book.midprice() is None
+
+def cancel_order(self, order_id):
+        if order_id not in self.order_map:
+            return False
+
+        order = self.order_map[order_id]
+
+        if order.side == "BUY":
+            queue = self.bids[order.price]
+        else:
+            queue = self.asks[order.price]
+
+        queue.remove(order)
+
+        if len(queue) == 0:
+            if order.side == "BUY":
+                del self.bids[order.price]
+            else:
+                del self.asks[order.price]
+
+        del self.order_map[order_id]
+        return True
