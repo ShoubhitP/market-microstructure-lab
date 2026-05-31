@@ -56,3 +56,21 @@ class OrderBook:
         if len(self.asks[price]) == 0:
             del self.asks[price]
         return order
+    
+    def spread(self):
+        bid = self.best_bid()
+        ask = self.best_ask()
+
+        if bid is None or ask is None:
+            return None
+
+        return ask - bid
+
+    def midprice(self):
+        bid = self.best_bid()
+        ask = self.best_ask()
+
+        if bid is None or ask is None:
+            return None
+
+        return (bid + ask) / 2
