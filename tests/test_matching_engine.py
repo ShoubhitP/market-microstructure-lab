@@ -85,3 +85,35 @@ def test_price_priority():
 
     assert trades[0].sell_order_id == 2
     assert trades[0].price == 50.0
+
+def test_partial_fill_preserves_fifo_priority():
+    engine = MatchingEngine()
+
+    engine.submit_order(Order(1, "SELL", 100, 50.0, 1))
+    engine.submit_order(Order(2, "SELL", 100, 50.0, 2))
+
+    trades = engine.submit_order(Order(3, "BUY", 50, 50.0, 3))
+
+    assert len(trades) == 1
+    assert trades[0].sell_order_id == 1
+
+    trades = engine.submit_order(Order(4, "BUY", 50, 50.0, 4))
+
+    assert len(trades) == 1
+    assert trades[0].sell_order_id == 1
+
+def test_partial_fill_preserves_fifo_priority_for_buys():
+    engine = MatchingEngine()
+
+    engine.submit_order(Order(1, "BUY", 100, 50.0, 1))
+    engine.submit_order(Order(2, "BUY", 100, 50.0, 2))
+
+    trades = engine.submit_order(Order(3, "SELL", 50, 50.0, 3))
+
+    assert len(trades) == 1
+    assert trades[0].buy_order_id == 1
+
+    trades = engine.submit_order(Order(4, "SELL", 50, 50.0, 4))
+
+    assert len(trades) == 1
+    assert trades[0].buy_order_id == 1

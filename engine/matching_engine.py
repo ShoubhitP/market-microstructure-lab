@@ -24,7 +24,7 @@ class MatchingEngine:
             and self.book.best_ask() is not None
             and self.book.best_ask() <= incoming.price
         ):
-            resting_sell = self.book.pop_best_ask_order()
+            resting_sell = self.book.best_ask_order()
 
             trade_quantity = min(incoming.quantity, resting_sell.quantity)
 
@@ -35,14 +35,13 @@ class MatchingEngine:
                 quantity=trade_quantity,
                 timestamp=incoming.timestamp,
             )
-
             trades.append(trade)
 
             incoming.quantity -= trade_quantity
             resting_sell.quantity -= trade_quantity
 
-            if resting_sell.quantity > 0:
-                self.book.add_order(resting_sell)
+            if resting_sell.quantity == 0:
+                self.book.pop_best_ask_order()
 
         if incoming.quantity > 0:
             self.book.add_order(incoming)
@@ -58,7 +57,7 @@ class MatchingEngine:
             and self.book.best_bid() is not None
             and self.book.best_bid() >= incoming.price
         ):
-            resting_buy = self.book.pop_best_bid_order()
+            resting_buy = self.book.best_bid_order()
 
             trade_quantity = min(incoming.quantity, resting_buy.quantity)
 
@@ -75,8 +74,8 @@ class MatchingEngine:
             incoming.quantity -= trade_quantity
             resting_buy.quantity -= trade_quantity
 
-            if resting_buy.quantity > 0:
-                self.book.add_order(resting_buy)
+            if resting_buy.quantity == 0:
+                self.book.pop_best_bid_order()
 
         if incoming.quantity > 0:
             self.book.add_order(incoming)
